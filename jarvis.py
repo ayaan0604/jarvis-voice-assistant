@@ -161,12 +161,3 @@ if __name__=="__main__":
         process_command(command)
     
 
-
-
-#print("Press 0 to talk")
-#keyboard.on_release(on_release)
-#keyboard.wait("esc")
-
-
-#current issue- not able to execute the commands
-#no feature to stop listening forcefully
