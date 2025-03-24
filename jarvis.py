@@ -139,22 +139,6 @@ def process_command(command):
         exit()
 
     
-def on_release(event):
-    if event.name=="0":
-        command=take_command()
-        if command and command!='none':
-            process_command(command)
-
-def on_release(event):
-    global is_listening
-    if event.name == "0" and not is_listening:  # Prevents multiple triggers
-        threading.Thread(target=listen_and_process, daemon=True).start()
-
-def listen_and_process():
-    command = take_command()
-    if command and command != "none":
-        process_command(command)
-
 if __name__=="__main__":
     while True:
         command=take_command()
