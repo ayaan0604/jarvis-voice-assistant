@@ -32,6 +32,20 @@ joke_keywords = [
     "joke please"
 ]
 
+todo_keywords={
+    'identifiers' : ["todo","remainder","remind","task"],
+    'add_todo': ["add", "remember"],
+    "view_todo" : ["show","view"],
+    'done_todo' : ["mark as done", "mark done"],
+    'delete_todo':["delete","mark all"],
+    'pending_todo': ["pending", "not done","due"],
+    'todo_help' :["say >add todo< (task) to add a task",
+                  "say >view todo< or >view pending todo< to show all due todos",
+                  "say >mark todo< or >mark as done todo< to mark the todo as done",
+                  "say >mark all todo< or >delete todo list< to delete all the todos in the list"
+                  "say >todo help< for todo related commands"]
+
+}
 
 months = {
     1: "January",

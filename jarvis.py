@@ -2,13 +2,17 @@ import speech_recognition as sr
 import pyttsx3
 import pywhatkit
 from datetime import datetime
-import os
 import webbrowser
-import threading
 from keywords import *
 import pyjokes
+from database import *
 
+#registering the webbrowser
 webbrowser.register("brave",None,webbrowser.BackgroundBrowser(r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"))
+
+#initializing the database
+initialize_db()
+
 
 is_listening=False      #flag for listening
 
@@ -46,6 +50,85 @@ def getJoke():
     joke=pyjokes.get_joke()
     speak(joke)
 
+def process_todo_command(query):
+    todo_executed=False
+    for keyword in todo_keywords["add_todo"]:
+        if keyword in query:
+            todo=query.replace(keyword,"")
+            try:
+                add_todo(todo)
+                speak(f"Added task {todo} into the todo list successfully")
+                todo_executed=True
+            except Exception as e:
+                print(e)
+            
+            break
+
+    for keyword in todo_keywords["view_todo"]:
+        if keyword in query:
+            speak("Here is a list of all the pending todos")
+
+            try:
+                get_pending_todo()
+                todo_executed=True
+            except Exception as e:
+                speak("some error occured")
+                print(e)
+            
+            break
+
+    for keyword in todo_keywords["done_todo"]:
+        if keyword in query:
+            speak("please enter the todo number from the list of todos\n")
+            get_pending_todo()
+            num=int(input("\nEnter todo number (enter 0 to cancel): "))
+
+            if num == 0:
+                print("request cancelled")
+                todo_executed=True
+
+            else:
+                try:
+                    mark_as_done(num)
+                    speak("marked the todo as done")
+                    todo_executed=True
+                except Exception as e:
+                    speak("please enter a valid number")
+                    print(e)
+
+            
+            break
+
+    for keyword in todo_keywords['delete_todo']:
+        if keyword in query:
+            speak("Do you really want to delete the todo list?")
+            choice=input("Enter yes to confirm").lower()
+            if choice=='yes':
+                    
+                try:
+                    
+                    delete_all_todo()
+                    speak("deleted all tasks from the todo list")
+                except Exception as e:
+                    speak("some error occured")
+                    print(e)
+                todo_executed=True
+
+            else:
+                speak("cancelled deletion")
+                
+                break
+
+            
+
+    if "help" in command:
+        speak("Here are the todo related commands")
+        for help in todo_keywords['todo_help']:
+            print(help)
+            todo_executed=True
+
+    if not todo_executed:
+        speak("Say todo help for todo related commands")
 
 
 def take_command():
@@ -134,14 +217,22 @@ def process_command(command):
             getJoke()
             break
 
+    for keyword in todo_keywords["identifiers"]:
+        if keyword in command:
+            query=command.replace("todo","")
+            process_todo_command(query)
+            break
+
     if "bye" in command:
         speak("Goodbye")
         exit()
 
+
     
 if __name__=="__main__":
     while True:
-        command=take_command()
+        #command=take_command()
+        command=input("Enter command")
         process_command(command)
     
 
