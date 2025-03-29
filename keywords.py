@@ -29,7 +29,8 @@ joke_keywords = [
     "funny joke", 
     "I need a laugh", 
     "humor me", 
-    "joke please"
+    "joke please",
+    "joke"
 ]
 
 todo_keywords={
@@ -42,10 +43,18 @@ todo_keywords={
     'todo_help' :["say >add todo< (task) to add a task",
                   "say >view todo< or >view pending todo< to show all due todos",
                   "say >mark todo< or >mark as done todo< to mark the todo as done",
-                  "say >mark all todo< or >delete todo list< to delete all the todos in the list"
+                  "say >mark all todo< or >delete todo list< to delete all the todos in the list",
                   "say >todo help< for todo related commands"]
 
 }
+
+
+news_keywords = [
+    "news", "latest news", "headlines", "top news", "breaking news", 
+    "tell me the news", "what's in the news", "read news", "news update", 
+    "today's news", "show me headlines"
+]
+
 
 months = {
     1: "January",

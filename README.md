@@ -9,6 +9,8 @@ A simple voice assistant that listens to commands and performs tasks like web se
 - **⏳ Time & Date** - Get current time and date.  
 - **🤣 Jokes** - Fun random jokes.  
 - **📢 Repeat Mode** - Makes Jarvis repeat after you.  
+- **   Current News** - Fetches the top headlines for you. 
+- **   Todo list** - Todo features to manage your daily tasks. 
 
 ## **Installation**  
 1. Clone the repo:  
@@ -29,8 +31,11 @@ A simple voice assistant that listens to commands and performs tasks like web se
 ## **Commands**  
 - 🎵 `"Play [song name]"`  
 - 🌍 `"Search [query]"` / `"Search [query] on YouTube"`  
-- ⏳ `"What is the time?"` / `"Today's date?"`  
+- ⏳ `"What is the time?"` / `"Current date"`  
 - 🤣 `"Tell me a joke"`  
 - 🖥️ `"Open YouTube"` / `"Open Browser"`  
+-    `"Todo help"` / `"add todo"`  
+-    `"news"` / `"tell me the news"`  
+-    `"repeat after me"`  
 - 👋 `"Bye"` (Exit)  
 

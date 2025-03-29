@@ -23,6 +23,15 @@ def initialize_db():
 
 ''')
     
+    #table for playlists
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS PLAYLISTS(
+               SERIAL_NO INTEGER PRIMARY KEY,
+               NAME VARCHAR(255),
+               LINK VARCHAR(255))
+
+''')
+
     #connection close
     connection.close()
     
@@ -90,7 +99,59 @@ def delete_all_todo():
     connection.close()
 
 
+#playlist funtions
+#funtion to take the name and link of a playlist and save it to the database
+def save_playlist(name,link):
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    cursor.execute('''INSERT INTO PLAYLISTS(NAME,LINK)
+                    VALUES(?,?)''',(name,link))
+    connection.commit()
+    connection.close()
 
+#funtion to take name and return link of a saved playlist
+def get_playlist(name):
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    playlist_link=None
+    try:
+        cursor.execute('''SELECT LINK FROM PLAYLISTS
+                       WHERE NAME=?''',(name,))
+        if cursor.fetchone():
+            playlist_link=cursor.fetchone()[0]
+        
 
+    except Exception as e:
+        print(e)
+    finally:
+        connection.close()
+    
+    if playlist_link:
+        return playlist_link
+    return None
 
+#function to delete a playlist from database
+def delete_playlist(name):
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    cursor.execute('''DELETE FROM PLAYLISTS WHERE NAME=?''',(name,))
+    connection.commit()
+    connection.close()    
+
+#function to get all the playlist names
+def view_playlists():
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    try:
+        cursor.execute('''SELECT NAME FROM PLAYLISTS''')
+        playlists=cursor.fetchall()
+        i=1
+        for title in playlists:
+            print(f"{i}. {title[0]}")
+            i+=1
+
+    except Exception as e:
+        print(e)
+    
+    connection.close()
 

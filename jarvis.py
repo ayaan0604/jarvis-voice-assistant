@@ -6,6 +6,7 @@ import webbrowser
 from keywords import *
 import pyjokes
 from database import *
+from news import get_news
 
 #registering the webbrowser
 webbrowser.register("brave",None,webbrowser.BackgroundBrowser(r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"))
@@ -54,7 +55,7 @@ def process_todo_command(query):
     todo_executed=False
     for keyword in todo_keywords["add_todo"]:
         if keyword in query:
-            todo=query.replace(keyword,"")
+            todo=query.replace(keyword,"").strip()
             try:
                 add_todo(todo)
                 speak(f"Added task {todo} into the todo list successfully")
@@ -109,10 +110,16 @@ def process_todo_command(query):
                     
                     delete_all_todo()
                     speak("deleted all tasks from the todo list")
+                    
                 except Exception as e:
                     speak("some error occured")
                     print(e)
-                todo_executed=True
+                
+                finally:
+                    todo_executed=True
+
+
+                break
 
             else:
                 speak("cancelled deletion")
@@ -121,7 +128,7 @@ def process_todo_command(query):
 
             
 
-    if "help" in command:
+    if "help" in query:
         speak("Here are the todo related commands")
         for help in todo_keywords['todo_help']:
             print(help)
@@ -129,6 +136,20 @@ def process_todo_command(query):
 
     if not todo_executed:
         speak("Say todo help for todo related commands")
+
+def process_news_command():
+    articles=get_news()
+    speak("Okay, here are the top headlines from BBC News:")
+    i=1
+    for news in articles:
+        speak(f'Headline number {i}: {news[0]}')
+        print("Description:")
+        speak(news[1])
+        i+=1
+
+        print(f"source: {news[2]}\n\n")
+    
+    speak("Hmmm. The world seems doomed")
 
 
 def take_command():
@@ -165,7 +186,7 @@ def process_command(command):
 
     if "hello" in command:
         speak('Hi there! I am jarvis. What can i do for you?')
-
+        return
     youtubeSearch=False
     if "youtube" in command:
         for keyword in youtube_keywords:
@@ -173,55 +194,67 @@ def process_command(command):
                 youtubeSearch=True
 
                 searchOnYoutube(command,keyword)
-
+        return   
     
 
     if "search" in command and not youtubeSearch:
         query=command.replace("search","").strip()
         speak(f"Searching for {query} on google")
         pywhatkit.search(query)
+        return
 
     if "open brave" in command or "open browser" in command or "browser" in command:
         speak("Alright, opening brave")
         webbrowser.get("brave").open()
+        return
 
     if "open youtube" in command:
         speak("Alright, opening youtube")
         webbrowser.open("https://www.youtube.com")
+        return
 
     if "repeat after me" in command:
         query=command.replace("repeat after me","")
         speak(query)
+        return
 
     for keyword in date_keywords:
         if keyword in command:
             info=datetime.now()
             current_date=f"today is {info.day} of {months[info.month]} , {info.year}"
             speak(current_date)
-            break
+            
+            
+            return
 
     
     for keyword in time_keywords:
         if keyword in command:
-             info=datetime.now()
-             time=f"the current time is {info.hour} hours {info.minute} minutes and {info.second} seconds"
-             speak(time)
-             break
+            info=datetime.now()
+            time=f"the current time is {info.hour} hours {info.minute} minutes and {info.second} seconds"
+            speak(time)
+            return
         
     if "play" in command:
         play_song(command)
+        return
 
 
     for keyword in joke_keywords:
         if keyword in command:
             getJoke()
-            break
+            return
 
     for keyword in todo_keywords["identifiers"]:
         if keyword in command:
             query=command.replace("todo","")
             process_todo_command(query)
-            break
+            return
+
+    for keyword in news_keywords:
+        if keyword in command:
+            process_news_command()
+            return
 
     if "bye" in command:
         speak("Goodbye")
@@ -232,7 +265,7 @@ def process_command(command):
 if __name__=="__main__":
     while True:
         #command=take_command()
-        command=input("Enter command")
+        command=input("Enter command: ")
         process_command(command)
     
 
