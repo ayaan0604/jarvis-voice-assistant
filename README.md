@@ -4,13 +4,14 @@ A simple voice assistant that listens to commands and performs tasks like web se
 
 ## **Features**  
 - **🎙️ Voice Commands** - Control Jarvis hands-free.  
+- **💬Text commands** - Use your keyboard to type in commands  
 - **🌍 Search** - Google & YouTube search.  
 - **🎵 Play Music** - Plays songs on YouTube.  
 - **⏳ Time & Date** - Get current time and date.  
 - **🤣 Jokes** - Fun random jokes.  
 - **📢 Repeat Mode** - Makes Jarvis repeat after you.  
--    **Current News** - Fetches the top headlines for you. 
--    **Todo list** - Todo features to manage your daily tasks. 
+- **📰Current News** - Fetches the top headlines for you. 
+- **📃Todo list** - Todo features to manage your daily tasks. 
 
 ## **Installation**  
 1. Clone the repo:  
@@ -29,13 +30,14 @@ A simple voice assistant that listens to commands and performs tasks like web se
 
 
 ## **Commands**  
+- 🎙️ `"voice input"` / `"text input"`  
 - 🎵 `"Play [song name]"`  
 - 🌍 `"Search [query]"` / `"Search [query] on YouTube"`  
 - ⏳ `"What is the time?"` / `"Current date"`  
 - 🤣 `"Tell me a joke"`  
 - 🖥️ `"Open YouTube"` / `"Open Browser"`  
--    `"Todo help"` / `"add todo"`  
--    `"news"` / `"tell me the news"`  
--    `"repeat after me"`  
+- 📖 `"Todo help"` / `"add todo"`  
+- 📰 `"news"` / `"tell me the news"`  
+- 🗣️ `"repeat after me"`  
 - 👋 `"Bye"` (Exit)  
 

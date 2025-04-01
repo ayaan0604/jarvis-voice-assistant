@@ -21,7 +21,16 @@ def initialize_db():
                TASK VARCHAR(1024),
                STATUS BOOLEAN)
 
-''')
+                ''')
+    
+    #table for email recipents
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS EMAIL_RECIPENTS(
+               SERIAL_NO INTEGER PRIMARY KEY,
+               NAME VARCHAR(255),
+               EMAIL VARCHAR(255));
+
+                ''')
     
     #table for playlists
     cursor.execute('''
@@ -30,7 +39,7 @@ def initialize_db():
                NAME VARCHAR(255),
                LINK VARCHAR(255))
 
-''')
+                ''')
 
     #connection close
     connection.close()
@@ -155,3 +164,80 @@ def view_playlists():
     
     connection.close()
 
+#functions for emails
+def mail_already_registered(email):
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    try:
+        cursor.execute('''SELECT * FROM EMAIL_RECIPENTS WHERE EMAIL=?''',(email,))
+        recipent=cursor.fetchone()
+        if recipent==None:
+            return False
+        else:
+            return True
+
+    except Exception as e:
+        print(e)
+
+def add_email(name,email):
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    if not mail_already_registered(email):
+
+        try:
+            cursor.execute('''INSERT INTO EMAIL_RECIPENTS(NAME,EMAIL)
+                           VALUES(?,?)''',(name,email))
+            connection.commit()
+            print(f"Successfully added mail {email} with tha name {name} into the recipent list")
+
+        except Exception as e:
+            print(e)
+    
+    else:
+        print(f"email already registerd")
+    connection.close()
+
+def get_all_emails():
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    cursor.execute('''SELECT * FROM EMAIL_RECIPENTS''')
+    recipents=cursor.fetchall()
+    if not recipents:
+        print("The recipent list is empty")
+        return
+    i=0
+    print("\n")
+    for recipent in recipents:
+        i+=1
+        print(f"{i}) Name: {recipent[1]}\tEmail: {recipent[2]}")
+    print("\n")   
+    connection.close()
+
+def delete_email(email):
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    if mail_already_registered(email):
+        try:
+            cursor.execute('''DELETE FROM EMAIL_RECIPENTS WHERE EMAIL=?''',(email,))
+            connection.commit()
+            print(f"Deleted email {email}")
+        
+        except Exception as e:
+            print(e)
+
+    else:
+        print("email does not exists")
+    connection.close()
+
+def get_mail(name):
+    
+    connection= sqlite3.connect("Jarvis_Database.db")
+    cursor=connection.cursor()
+    cursor.execute('''SELECT EMAIL FROM EMAIL_RECIPENTS WHERE NAME=?''',(name,))
+    recipent=cursor.fetchone()
+    if not recipent:
+        
+        return None
+    
+    return recipent[0]
+    

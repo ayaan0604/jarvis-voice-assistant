@@ -7,6 +7,7 @@ from keywords import *
 import pyjokes
 from database import *
 from news import get_news
+from auto_email import send_email
 
 #registering the webbrowser
 webbrowser.register("brave",None,webbrowser.BackgroundBrowser(r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"))
@@ -129,10 +130,12 @@ def process_todo_command(query):
             
 
     if "help" in query:
-        speak("Here are the todo related commands")
+        speak("Here are the todo related commands\n\n")
+        i=1
         for help in todo_keywords['todo_help']:
-            print(help)
-            todo_executed=True
+            print(f"{i}) {help}")
+            i+=1
+        todo_executed=True
 
     if not todo_executed:
         speak("Say todo help for todo related commands")
@@ -151,6 +154,180 @@ def process_news_command():
     
     speak("Hmmm. The world seems doomed")
 
+def process_email_command(query):
+    if "add" in query:
+        speak("Do you want to add an email into the recipent list? Type yes to confirm")
+        choice=input("Enter your choice: ").lower()
+        if "yes" not in choice:
+            speak("cancelling request")
+            return
+        
+        
+        speak("Please type in the name and email address of the recipent")
+        name=input("Enter name: ")
+        email=input("Enter email: ")
+        
+        speak("Please confirm the name and email address of the recipent")
+
+        print(f"Name: {name}\t Email: {email}")
+        choice=input("Enter yes to confirm: ")
+        if "yes" not in choice:
+            speak("Cancellinig request! Say add email to restart adding process")
+            return
+        
+        try:
+            add_email(name,email)
+            speak("Email added successfully into the recipent list")
+            return
+        except Exception as e:
+            print("Some error occured: ",e)
+
+    if "delete" in query:
+        speak("Enter the email of the recipent to delete")
+        get_all_emails()
+        speak("Enter 0 to cancel")
+
+        email=input("Enter email: ")
+        if email=='0':
+            speak("Cancelling request")
+            return
+
+        if not mail_already_registered(email):
+            print("Email not present in the list")
+            return
+        try:
+            delete_email(email)
+            speak("Deleted the email successfully")
+            return
+        except Exception as e:
+            print(f"Error deleting email: {e}")
+
+    if "view" in query:
+        speak("Here is your email recipent list")
+        try:
+            get_all_emails()
+            return
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            return        
+
+    if "send" in query:
+        
+        confirmed=False
+
+        
+        speak("Enter the name of the recipent. Enter 0 to cancel")
+
+        name=input("Enter name: ")
+        if name=="0":
+            print("Cancelling request")
+            return
+        
+        #try fetching the email from database
+        email=get_mail(name)
+        if not email:
+            speak(f'''No email found with the name {name}. You can say "send email" to restart the process ''')
+            return
+        
+        speak(f"Do you want to send email to {name} with email {email} ")
+
+        choice=input("Enter yes to confirm: ")
+        if "yes" not in choice:
+            speak("Okay! You can say send email to start the process again")               
+            return
+        
+        speak("Okay! would you like to speak the message or write it?")
+        #now the user has confirmed the recipent
+        choice_confirmed=False
+        global text_input_choice
+        text_input_choice=False
+        while(not choice_confirmed):
+            
+            choice=input("Enter speak or write: ")
+            if "speak" in choice:
+                text_input_choice=False
+                break
+                
+            elif "write" in choice:
+                text_input_choice=True
+                break
+            else:
+                print("Please enter a valid choice")
+                continue
+
+        global subject
+        global message
+    
+
+
+        #if user has selected text input
+        if text_input_choice:
+
+            global data_confirmed
+            data_confirmed=False
+            while(not data_confirmed):
+
+                speak("Enter the Subject")
+                subject=input("Subject: ")
+                speak("Enter message")
+                message=input("Enter message: ")
+
+                speak("Please confirm message to proceed")
+                print(f"\nSubject: {subject}\nMessage: {message}\n")
+                choice=input("Enter yes to confirm")
+                if "yes" not in choice:
+                    continue
+
+                else:
+                    data_confirmed=True
+        
+
+
+        #if user has selected voice input
+        else:
+            global subject_confirmed, message_confirmed
+            subject_confirmed=False
+            message_confirmed=False
+            while(not subject_confirmed):
+                speak("Enter the subject")
+                subject=take_command()
+                speak(f"{subject}. Is that correct? Say yes to confirm")
+                choice=take_command()
+
+                if "yes" in choice:
+                    subject_confirmed=True
+                    break
+            
+                else:
+                    continue
+
+            #subject confirmed
+
+            while(not message_confirmed):
+                speak("Record the message")
+                message=take_command()
+                speak(f"Please confirm the message.")
+                speak(message)
+                speak("Say yes to confirm")
+                choice=take_command()
+                if "yes" in command:
+                    message_confirmed=True
+                    break
+                else:
+                    continue
+
+        #at this point, user has confirmed all the parameters so we can try sending the mail
+        final_message=message+"\nThis email was sent through a virtual assistant."
+        status=send_email(email, subject, final_message)
+        speak(status)
+        return
+
+    if "help" in query:
+        i=1
+        for line in email_help:
+            print(f"{i}) {line}")
+            i+=1
+        return
 
 def take_command():
     global is_listening
@@ -247,7 +424,7 @@ def process_command(command):
 
     for keyword in todo_keywords["identifiers"]:
         if keyword in command:
-            query=command.replace("todo","")
+            query=command.replace("to do","")
             process_todo_command(query)
             return
 
@@ -256,6 +433,9 @@ def process_command(command):
             process_news_command()
             return
 
+    if "email" in command:
+        process_email_command(command)
+
     if "bye" in command:
         speak("Goodbye")
         exit()
@@ -263,9 +443,27 @@ def process_command(command):
 
     
 if __name__=="__main__":
+    voice_input=False
+    if voice_input:
+        print("Enter 'voice input' to change to voice mode")
+    else:
+        print("Enter 'text input' to change to text mode")
+    
     while True:
-        #command=take_command()
-        command=input("Enter command: ")
+        if voice_input:
+            command=take_command()
+            if "text input" in command:
+                speak("changing the input mode into text")
+                voice_input=False
+                continue
+        
+        if not voice_input:
+            command=input("Enter command: ")
+            if "voice input" in command:
+                speak("Alright! now i will respond to your voice")
+                voice_input=True
+                continue
+        
         process_command(command)
     
 

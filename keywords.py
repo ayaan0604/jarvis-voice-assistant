@@ -34,17 +34,17 @@ joke_keywords = [
 ]
 
 todo_keywords={
-    'identifiers' : ["todo","remainder","remind","task"],
-    'add_todo': ["add", "remember"],
+    'identifiers' : ["to do","remainder","remind","task"],
+    'add_todo': ["add task","add", "remember"],
     "view_todo" : ["show","view"],
-    'done_todo' : ["mark as done", "mark done"],
+    'done_todo' : ["mark as done", "mark done","mark to do","mark"],
     'delete_todo':["delete","mark all"],
     'pending_todo': ["pending", "not done","due"],
-    'todo_help' :["say >add todo< (task) to add a task",
-                  "say >view todo< or >view pending todo< to show all due todos",
-                  "say >mark todo< or >mark as done todo< to mark the todo as done",
-                  "say >mark all todo< or >delete todo list< to delete all the todos in the list",
-                  "say >todo help< for todo related commands"]
+    'todo_help' :["say >add to do< (task) to add a task",
+                  "say >view to do< or >view pending to do< to show all due todos",
+                  "say >mark to do< or >mark as done to do< to mark the todo as done",
+                  "say >mark all to do< or >delete to do list< to delete all the todos in the list",
+                  "say >to do help< for todo related commands"]
 
 }
 
@@ -55,6 +55,17 @@ news_keywords = [
     "today's news", "show me headlines"
 ]
 
+email_keywords=[
+    "add email", "view email", "delete email", "send email","email help"
+]
+
+email_help=[
+    "Say >add email< to add an email to email list",
+    "Say >delete email< to delete an email",
+    "Say >view email< to view the email recipent list",
+    "Say >send email< to send an email to anyone from the recipent list",
+    "Say >email help< to get email related commands" 
+]
 
 months = {
     1: "January",
