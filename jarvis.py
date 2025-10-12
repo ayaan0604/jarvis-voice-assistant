@@ -10,7 +10,7 @@ from news import get_news
 from auto_email import send_email
 
 #registering the webbrowser
-webbrowser.register("brave",None,webbrowser.BackgroundBrowser(r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"))
+webbrowser.register("brave",None,webbrowser.BackgroundBrowser(r"C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe"))
 
 #initializing the database
 initialize_db()
@@ -364,6 +364,13 @@ def process_command(command):
     if "hello" in command:
         speak('Hi there! I am jarvis. What can i do for you?')
         return
+    
+    if "open youtube" in command:
+        speak("Alright, opening youtube")
+        webbrowser.get("brave").open("https://www.youtube.com")
+        return
+    
+    
     youtubeSearch=False
     if "youtube" in command:
         for keyword in youtube_keywords:
@@ -382,13 +389,9 @@ def process_command(command):
 
     if "open brave" in command or "open browser" in command or "browser" in command:
         speak("Alright, opening brave")
-        webbrowser.get("brave").open()
+        webbrowser.get("brave").open("")
         return
 
-    if "open youtube" in command:
-        speak("Alright, opening youtube")
-        webbrowser.open("https://www.youtube.com")
-        return
 
     if "repeat after me" in command:
         query=command.replace("repeat after me","")
@@ -445,9 +448,9 @@ def process_command(command):
 if __name__=="__main__":
     voice_input=False
     if voice_input:
-        print("Enter 'voice input' to change to voice mode")
+        print("Enter 'text' to change to voice mode")
     else:
-        print("Enter 'text input' to change to text mode")
+        print("Enter 'voice input' to change to text mode")
     
     while True:
         if voice_input:
