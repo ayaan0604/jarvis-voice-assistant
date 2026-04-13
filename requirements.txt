@@ -63,5 +63,6 @@ virtualenvwrapper==6.1.1
 virtualenvwrapper-win==1.2.7
 Werkzeug==3.0.4
 wikipedia==1.4.0
+yagmail
 yt-dlp==2025.3.27
 zope.interface==7.2
